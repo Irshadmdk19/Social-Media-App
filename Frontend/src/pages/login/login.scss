@@ -1,0 +1,83 @@
+@import"../../style.scss";
+.login{
+    height: 100vh;
+    background-color: aqua;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .card{
+        width: 50%;
+        display: flex;
+        background-color: rgb(193, 190, 255);
+        overflow: hidden;
+        border-radius: 10px;
+        min-height: 600px;
+        
+        .left{
+            flex: 1;
+            background: url("https://images.pexels.com/photos/1028225/pexels-photo-1028225.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1") center;
+
+            background-size: cover;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            color: white;
+
+            h1{
+                line-height: 42px;
+                font-size: 50px;
+
+            }
+            p{
+
+            }
+            span{
+
+            }
+            button{
+                width: 50%;
+                background-color: white;
+                color: red;
+                border: none;
+                padding: 10px;
+                cursor: pointer;
+
+
+            }
+        }
+        .right{
+            flex: 2;
+            padding: 50px;
+            background-color: rgb(227, 227, 231);
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            h1{
+
+            }
+            form{
+                display: flex;
+                flex-direction: column;
+                gap: 30px;
+                input{
+                    padding: 10px 5px;
+                    border: none;
+                    border-bottom: 1px solid  rgb(237, 224, 224);
+                }
+                button{
+                    width: 50%;
+                background-color: white;
+                color: red;
+                border: none;
+                padding: 10px;
+                cursor: pointer;
+                font-weight: bold;
+
+                }
+
+            }
+
+        }
+    }
+}

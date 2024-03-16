@@ -1,0 +1,12 @@
+@import"../../style.scss";
+.home{
+    // display: flex;
+    // flex-direction: column;
+    padding: 20px 10px;
+    @include mobile{
+        padding: 7px;
+    }
+    @include tablet{
+        padding: 6px;
+    }
+}
