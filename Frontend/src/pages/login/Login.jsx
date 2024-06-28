@@ -1,12 +1,37 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import './login.scss'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/authContext'
 const Login = () => {
+  const [inputs, setInputs] = useState({
+    username:"",
+    password:"",
+    
+  })
+
+  const [err, setErr] = useState(null)
+
+  const  navigate= useNavigate();
+  
+  const handleChange=(e)=>{
+    setInputs(prev=>({
+        ...prev,[e.target.name]:e.target.value}))
+  }
+  console.log(inputs)
     
   const{login}=useContext(AuthContext);
-  const handleLogin=()=>{
-    login();
+
+  const handleLogin= async(e)=>{
+    e.preventDefault();
+    try{
+      await login(inputs)
+      navigate("/")
+
+    }
+    catch(err){
+      setErr(err.response.data)
+    }
+    
   }
     
   return (
@@ -25,12 +50,15 @@ const Login = () => {
             <div className="right">
                 <h1>Login</h1>
                 <form action="">
-                    {/* <label htmlFor="username">Username</label> */}
-                    <input type="text" placeholder='Enter username' id='username' />
-                    {/* <label htmlFor="password">Password</label> */}
-                    <input type="password" placeholder='Enter password' id='password' />
+                    
+                    <input type="text" placeholder='Enter username' id='username' name='username'
+                    onChange={handleChange} />
+                    
+                    <input type="password" placeholder='Enter password' id='password' name='password'
+                    onChange={handleChange} />
+                    
                     <button onClick={handleLogin}>Login</button>
-
+                    {err && err}
                 </form>
 
 

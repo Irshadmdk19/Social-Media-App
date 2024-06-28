@@ -1,56 +1,70 @@
-import React, { useContext } from 'react'
-import './comments.scss'
-import { AuthContext } from '../../context/authContext'
-const Comments = () => {
-    const {currentUser}= useContext(AuthContext);
+import { useContext, useState } from "react";
+import "./comments.scss";
+import { AuthContext } from "../../context/authContext";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { makeRequest } from "../../axios";
+import moment from "moment";
 
-   const comments=[
-    {
-        id:1,
-        name:"Irshad",
-        userId:3,
-        profilePic:"https://images.pexels.com/photos/18095751/pexels-photo-18095751/free-photo-of-young-man-sitting-on-the-ground-at-a-basketball-court.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        desc:"This is a description of my post lorem sjhdj thujjs dnxdjasdkasjhdkjashdkas dasjdnaskjdnkasjhdkjashdjkasndkjasnjdksa dsajdbnasjkhdjksand sadkasndk",
-        img:"https://images.pexels.com/photos/20448105/pexels-photo-20448105/free-photo-of-venice.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load"
+const Comments = ({ postId }) => {
+  const [desc, setDesc] = useState("");
+  const { currentUser } = useContext(AuthContext);
+
+  const { isLoading, error, data } = useQuery(["comments"], () =>
+    makeRequest.get("/comments?postId=" + postId).then((res) => {
+      return res.data;
+    })
+  );
+
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation(
+    (newComment) => {
+      return makeRequest.post("/comments", newComment);
     },
     {
-        id:2,
-        name:"Sanjay",
-        userId:3,
-        profilePic:"https://images.pexels.com/photos/18095751/pexels-photo-18095751/free-photo-of-young-man-sitting-on-the-ground-at-a-basketball-court.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        desc:"This is a description of my post",
-        img:"https://images.pexels.com/photos/20448105/pexels-photo-20448105/free-photo-of-venice.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load"
-    },
-    {
-        id:3,
-        name:"Padmaraja",
-        userId:5,
-        profilePic:"https://images.pexels.com/photos/18095751/pexels-photo-18095751/free-photo-of-young-man-sitting-on-the-ground-at-a-basketball-court.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
-        desc:"This is a description of my post",
-        img:"https://images.pexels.com/photos/20448105/pexels-photo-20448105/free-photo-of-venice.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load"
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries(["comments"]);
+      },
     }
-   ] 
+  );
+
+  const handleClick = async (e) => {
+    e.preventDefault();
+    mutation.mutate({ desc, postId });
+    setDesc("");
+  };
+
   return (
-    
-    <div className='comments'>
-        <div className='write'>
-            <img src={currentUser.profilePic} alt="" />
-            <input type="text" placeholder='Write a comment' />
-            <button>Send</button>
-        </div>
-        {comments.map(comment=>(
-            <div className='comment'>
-                <img src={comment.profilePic} alt="" />
-                <div className='info'>
-                    <span>{comment.name}</span>
-                    <p>{comment.desc}</p>
-
-                </div>
-                <span className='date'>1 hour ago</span>
+    <div className="comments">
+      <div className="write">
+        <img src={"/upload/" + currentUser.profilePic} alt="" />
+        <input
+          type="text"
+          placeholder="write a comment"
+          value={desc}
+          onChange={(e) => setDesc(e.target.value)}
+        />
+        <button onClick={handleClick}>Send</button>
+      </div>
+      {error
+        ? "Something went wrong"
+        : isLoading
+        ? "loading"
+        : data.map((comment) => (
+            <div className="comment">
+              <img src={ comment.profilePic} alt="" />
+              <div className="info">
+                <span>{comment.name}</span>
+                <p>{comment.desc}</p>
+              </div>
+              <span className="date">
+                {moment(comment.createdAt).fromNow()}
+              </span>
             </div>
-        ))}
+          ))}
     </div>
-  )
-}
+  );
+};
 
-export default Comments
+export default Comments;

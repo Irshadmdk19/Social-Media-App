@@ -14,13 +14,19 @@ import Leftbar from './components/Leftbar/Leftbar';
 import Rightbar from './components/Rightbar/Rightbar';
 import './style.scss'
 import { AuthContext } from './context/authContext';
-
+import {
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 
 const App = () => {
   const {currentUser}=useContext(AuthContext);
-
+  const queryClient = new QueryClient()
   const Layout=()=>{
     return(
+
+      <QueryClientProvider client={queryClient}>
+
       <div classname="theme-dark">
         <Navbar/>
         <div style={{display:'flex'}}>
@@ -31,6 +37,8 @@ const App = () => {
           <Rightbar/>
         </div>
       </div>
+      </QueryClientProvider>
+
     )
   }
 
